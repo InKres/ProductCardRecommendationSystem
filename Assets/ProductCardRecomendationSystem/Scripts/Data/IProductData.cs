@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using UnityEngine;
 
 public interface IProductData
 {
@@ -9,6 +6,7 @@ public interface IProductData
     string GetName();
     string GetCategory();
     IReadOnlyList<string> GetTags();
-    float GetPrice();
     string GetBrand();
+    float GetRating();
+    float GetPrice();
 }
