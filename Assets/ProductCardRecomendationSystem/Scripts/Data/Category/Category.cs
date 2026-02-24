@@ -63,11 +63,16 @@ public class Category : ICategory
 
     public List<ICategory> GetCategories(bool isIncludeSubcategories)
     {
+        if (iCategories == null)
+        {
+            iCategories = new List<ICategory>();
+        }
+
         SyncCache(categories, iCategories);
 
         if (isIncludeSubcategories)
         {
-            foreach(ICategory category in categories)
+            foreach (ICategory category in categories)
             {
                 iCategories.AddRange(category.GetCategories(isIncludeSubcategories));
             }
@@ -78,6 +83,11 @@ public class Category : ICategory
 
     public List<IProductData> GetProducts(bool isIncludeSubcategories)
     {
+        if (iProducts == null)
+        {
+            iProducts = new List<IProductData>();
+        }
+
         SyncCache(products, iProducts);
 
         if (isIncludeSubcategories)
