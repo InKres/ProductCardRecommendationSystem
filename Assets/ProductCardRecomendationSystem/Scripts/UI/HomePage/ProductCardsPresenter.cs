@@ -42,10 +42,10 @@ public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
     {
         GameObject viewGO = Instantiate(productCardPrefab, container);
 
-        ProductCardView view = viewGO.GetComponent<ProductCardView>();
+        ProductView view = viewGO.GetComponent<ProductView>();
         view.Init();
         view.Setup(data);
-        view.OnClickByProductCard += OnClickByProduct;
+        view.OnClickByProductView += OnClickByProduct;
     }
 
     private void DestroyCardViews()
@@ -53,7 +53,7 @@ public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
 
     }
 
-    private void OnClickByProduct(ProductData data)
+    private void OnClickByProduct(IProductData data)
     {
         throw new NotImplementedException();
     }

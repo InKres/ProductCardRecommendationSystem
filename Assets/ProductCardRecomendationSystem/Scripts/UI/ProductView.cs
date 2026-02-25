@@ -3,14 +3,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProductCardView : MonoBehaviour
+public class ProductView : MonoBehaviour
 {
-    public event Action<ProductData> OnClickByProductCard;
+    public event Action<IProductData> OnClickByProductView;
 
     [Header("Components")]
     [SerializeField]
     private Button button;
 
+    [Space]
     [SerializeField]
     private TMP_Text ratingText;
     [SerializeField]
@@ -24,7 +25,7 @@ public class ProductCardView : MonoBehaviour
     [SerializeField]
     private TMP_Text priceText;
 
-    private ProductData productData;
+    private IProductData productData;
 
     private bool isInit;
 
@@ -32,9 +33,11 @@ public class ProductCardView : MonoBehaviour
     {
         if (isInit) return;
 
-        if (button == null) return;
+        if (button != null)
+        {
+            button.onClick.AddListener(OnClickByProduct);
+        }
 
-        button.onClick.AddListener(() => OnClickByProductCard?.Invoke(productData));
         isInit = true;
     }
 
@@ -42,9 +45,11 @@ public class ProductCardView : MonoBehaviour
     {
         if (isInit == false) return;
 
-        if (button == null) return;
+        if (button != null)
+        {
+            button.onClick.RemoveListener(OnClickByProduct);
+        }
 
-        button.onClick.RemoveAllListeners();
         isInit = false;
     }
 
@@ -77,6 +82,11 @@ public class ProductCardView : MonoBehaviour
         image.sprite = null;
         brandText.text = string.Empty;
         priceText.text = string.Empty;
+    }
+
+    private void OnClickByProduct()
+    {
+        OnClickByProductView?.Invoke(productData);
     }
 
     private void SetRatingText(float rating)
