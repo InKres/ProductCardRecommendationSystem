@@ -10,48 +10,28 @@ public class WindowView : MonoBehaviour
     [SerializeField]
     protected CanvasGroupShowController showController;
 
-    [Header("Settings")]
-    [SerializeField]
-    protected bool isInitOnStart = true;
-
     public bool IsShown => showController.IsShown;
 
+    protected bool isInitialized;
 
-    private bool isInitialized;
-
-    private void Start()
+    public virtual void Init()
     {
-        if (isInitOnStart)
-        {
-            Init();
-        }
+        if (isInitialized == true) return;
+
+        showController.OnShowed += OnShow;
+        showController.OnHided += OnHide;
+
+        isInitialized = true;
     }
 
-    private void OnDestroy()
+    public virtual void Dispose()
     {
-        Dispose();
-    }
+        if (isInitialized == false) return;
 
-    public void Init()
-    {
-        if (isInitialized == false)
-        {
-            showController.OnShowed += OnShow;
-            showController.OnHided += OnHide;
+        showController.OnShowed -= OnShow;
+        showController.OnHided -= OnHide;
 
-            isInitialized = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        if (isInitialized == true)
-        {
-            showController.OnShowed -= OnShow;
-            showController.OnHided -= OnHide;
-
-            isInitialized = false;
-        }
+        isInitialized = false;
     }
 
     public void Show(bool isImmediately = false)

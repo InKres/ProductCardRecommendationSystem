@@ -8,9 +8,14 @@ namespace MVP
 
         public void InjectModel(T model)
         {
-            if (model != null)
+            if (this.model != null)
             {
-                Debug.LogError("Model component not found!");
+                RemoveModel();
+            }
+
+            if (model == null)
+            {
+                Debug.LogError("Model component not found!", this);
 
                 return;
             }

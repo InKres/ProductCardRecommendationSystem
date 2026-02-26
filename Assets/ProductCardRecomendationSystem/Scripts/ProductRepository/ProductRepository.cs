@@ -35,10 +35,19 @@ public class ProductRepository : IProductRepository
 
     public List<IProductData> GetProductsByCategory(string categoryName, bool includeSubcategories = true)
     {
-        if (dataBase?.Category == null)
+        if (dataBase.Category == null)
             return new List<IProductData>();
 
-        ICategory category = dataBase.Category.GetSubcategoryByName(categoryName);
+        ICategory category = null;
+        if (dataBase.Category.GetName() == categoryName)
+        {
+            category = dataBase.Category;
+        }
+        else
+        {
+            category = dataBase.Category.GetSubcategoryByName(categoryName);
+        }
+
         if (category == null)
         {
             Debug.LogWarning($"Категория '{categoryName}' не найдена.");

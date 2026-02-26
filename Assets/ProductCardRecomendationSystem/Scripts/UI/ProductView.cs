@@ -23,6 +23,8 @@ public class ProductView : MonoBehaviour
     [SerializeField]
     private TMP_Text brandText;
     [SerializeField]
+    private TMP_Text purchasedQuantityText;
+    [SerializeField]
     private TMP_Text priceText;
 
     private IProductData productData;
@@ -53,7 +55,7 @@ public class ProductView : MonoBehaviour
         isInit = false;
     }
 
-    public void Setup(ProductData product)
+    public void Setup(IProductData product)
     {
         if (product == null)
         {
@@ -69,6 +71,7 @@ public class ProductView : MonoBehaviour
         SetDescriptionText(product.GetDescription());
         SetImage(product.GetImage());
         SetBrandText(product.GetBrand());
+        SetPurchasedQuantityText(product.GetPurchasedQuantity());
         SetPriceText(product.GetPrice());
     }
 
@@ -76,12 +79,23 @@ public class ProductView : MonoBehaviour
     {
         productData = null;
 
-        ratingText.text = string.Empty;
-        nameText.text = string.Empty;
-        descriptionText.text = string.Empty;
-        image.sprite = null;
-        brandText.text = string.Empty;
-        priceText.text = string.Empty;
+        if (ratingText != null)
+            ratingText.text = string.Empty;
+
+        if (nameText != null)
+            nameText.text = string.Empty;
+
+        if (descriptionText != null)
+            descriptionText.text = string.Empty;
+
+        if (brandText != null)
+            brandText.text = string.Empty;
+
+        if (purchasedQuantityText != null)
+            purchasedQuantityText.text = string.Empty;
+
+        if (priceText != null)
+            priceText.text = string.Empty;
     }
 
     private void OnClickByProduct()
@@ -115,7 +129,7 @@ public class ProductView : MonoBehaviour
 
     private void SetImage(Sprite productImage)
     {
-        if (image != null)
+        if (image != null && productImage != null)
         {
             image.sprite = productImage;
         }
@@ -126,6 +140,14 @@ public class ProductView : MonoBehaviour
         if (brandText != null)
         {
             brandText.text = brand;
+        }
+    }
+
+    private void SetPurchasedQuantityText(int value)
+    {
+        if (purchasedQuantityText != null)
+        {
+            purchasedQuantityText.text = value.ToString();
         }
     }
 

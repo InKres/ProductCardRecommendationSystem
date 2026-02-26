@@ -20,11 +20,7 @@ public class PopularityEngine
     {
         List<IProductData> allProducts = productRepository.GetAllProducts();
 
-        List<IProductData> popular = allProducts
-            .OrderByDescending(product => product.GetPurchasedQuantity())
-            .ThenByDescending(product => product.GetRating())
-            .Take(count)
-            .ToList();
+        List<IProductData> popular = GetPopularProducts(allProducts, count);
 
         return popular;
     }
@@ -37,11 +33,7 @@ public class PopularityEngine
         if (products == null || products.Count == 0)
             return new List<IProductData>();
 
-        List<IProductData> popular = products
-            .OrderByDescending(product => product.GetPurchasedQuantity())
-            .ThenByDescending(product => product.GetRating())
-            .Take(count)
-            .ToList();
+        List<IProductData> popular = GetPopularProducts(products, count);
 
         return popular;
     }
@@ -57,12 +49,16 @@ public class PopularityEngine
         if (categoryProducts == null || categoryProducts.Count == 0)
             return new List<IProductData>();
 
-        List<IProductData> popular = categoryProducts
-            .OrderByDescending(product => product.GetPurchasedQuantity())
-            .ThenByDescending(product => product.GetRating())
-            .Take(count)
-            .ToList();
+        List<IProductData> popular = GetPopularProducts(categoryProducts, count);
 
         return popular;
+    }
+
+    private List<IProductData> GetPopularProducts(List<IProductData> products, int count)
+    {
+        return products
+            .OrderByDescending(product => product.GetPurchasedQuantity() * product.GetRating())
+            .Take(count)
+            .ToList();
     }
 }

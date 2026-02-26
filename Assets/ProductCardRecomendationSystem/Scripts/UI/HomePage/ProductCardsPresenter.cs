@@ -1,11 +1,11 @@
+using MVP;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using MVP;
 
-public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
+public class ProductCardsPresenter : PresenterBehaviour<List<IProductData>>
 {
-    public event Action<ProductData> OnSelectProductCard;
+    public event Action<IProductData> OnSelectProductCard;
 
     [Header("Components")]
     [SerializeField]
@@ -13,16 +13,18 @@ public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
     [SerializeField]
     private Transform container;
 
-    private List<GameObject> productCardViews = new List<GameObject>();
+    private List<ProductView> productCardViews = new List<ProductView>();
 
-    protected override void OnInjectModel(List<ProductData> model)
+    protected override void OnInjectModel(List<IProductData> model)
     {
+        DestroyCardViews();
 
+        CreateProductCardViews(model);
     }
 
-    protected override void OnRemoveModel(List<ProductData> model)
+    protected override void OnRemoveModel(List<IProductData> model)
     {
-
+        DestroyCardViews();
     }
 
     protected override void OnDestroy()
@@ -30,15 +32,15 @@ public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
         base.OnDestroy();
     }
 
-    private void CreateProductCardViews(List<ProductData> datas)
+    private void CreateProductCardViews(List<IProductData> datas)
     {
-        foreach (ProductData data in datas)
+        foreach (IProductData data in datas)
         {
             CreateProductCardView(data);
         }
     }
 
-    private void CreateProductCardView(ProductData data)
+    private void CreateProductCardView(IProductData data)
     {
         GameObject viewGO = Instantiate(productCardPrefab, container);
 
@@ -46,15 +48,27 @@ public class ProductCardsPresenter : PresenterBehaviour<List<ProductData>>
         view.Init();
         view.Setup(data);
         view.OnClickByProductView += OnClickByProduct;
+
+        productCardViews.Add(view);
     }
 
     private void DestroyCardViews()
     {
+        if (productCardViews.Count == 0) return;
 
+        foreach (ProductView view in productCardViews)
+        {
+            view.Dispose();
+            view.OnClickByProductView -= OnClickByProduct;
+
+            Destroy(view.gameObject);
+        }
+
+        productCardViews.Clear();
     }
 
     private void OnClickByProduct(IProductData data)
     {
-        throw new NotImplementedException();
+        OnSelectProductCard?.Invoke(data);
     }
 }
