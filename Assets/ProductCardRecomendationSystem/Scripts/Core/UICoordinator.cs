@@ -47,7 +47,7 @@ public class UICoordinator : MonoBehaviour
 
         InitAllWindows();
 
-        LoadPopularityPeoducts();
+        LoadProductsByCategoryName("Главная страница");
 
         SubscribeOnEvents();
 
@@ -102,20 +102,6 @@ public class UICoordinator : MonoBehaviour
         showCategoryWindowButton.onClick.RemoveListener(ShowCategoryWindow);
         showHelpWindowButton.onClick.RemoveListener(ShowHelpWindow);
         closeApplicationButton.onClick.RemoveListener(OnCloseApplication);
-    }
-
-    private void LoadPopularityPeoducts()
-    {
-        if (recommendationFacade == null)
-        {
-            Debug.LogError("RecommendationFacade not found!", this);
-            return;
-        }
-
-        List<IProductData> popular = recommendationFacade.GetPopularProducts(displayedProductCount);
-        cardsPresenter.InjectModel(popular);
-
-        headerText.text = "Главная страница";
     }
 
     private void LoadProductsByCategoryName(string categoryName)
