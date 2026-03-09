@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ProductView : MonoBehaviour
 {
-    public event Action<IProductData> OnClickByProductView;
+    //public event Action<IProductData> OnClickByProductView;
 
     [Header("Components")]
     [SerializeField]
@@ -27,7 +27,7 @@ public class ProductView : MonoBehaviour
     [SerializeField]
     private TMP_Text priceText;
 
-    private IProductData productData;
+    //private IProductData productData;
 
     private bool isInit;
 
@@ -55,29 +55,29 @@ public class ProductView : MonoBehaviour
         isInit = false;
     }
 
-    public void Setup(IProductData product)
-    {
-        if (product == null)
-        {
-            Debug.LogError("Product data not found!!!", this);
+    //public void Setup(IProductData product)
+    //{
+    //    if (product == null)
+    //    {
+    //        Debug.LogError("Product data not found!!!", this);
 
-            return;
-        }
+    //        return;
+    //    }
 
-        productData = product;
+    //    productData = product;
 
-        SetRatingText(product.GetRating());
-        SetNameText(product.GetName());
-        SetDescriptionText(product.GetDescription());
-        SetImage(product.GetImage());
-        SetBrandText(product.GetBrand());
-        SetPurchasedQuantityText(product.GetPurchasedQuantity());
-        SetPriceText(product.GetPrice());
-    }
+    //    SetRatingText(product.GetRating());
+    //    SetNameText(product.GetName());
+    //    SetDescriptionText(product.GetDescription());
+    //    SetImage(product.GetImage());
+    //    SetBrandText(product.GetBrand());
+    //    SetPurchasedQuantityText(product.GetPurchasedQuantity());
+    //    SetPriceText(product.GetPrice());
+    //}
 
     public void Clear()
     {
-        productData = null;
+        //productData = null;
 
         if (ratingText != null)
             ratingText.text = string.Empty;
@@ -100,7 +100,7 @@ public class ProductView : MonoBehaviour
 
     private void OnClickByProduct()
     {
-        OnClickByProductView?.Invoke(productData);
+        //OnClickByProductView?.Invoke(productData);
     }
 
     private void SetRatingText(float rating)
