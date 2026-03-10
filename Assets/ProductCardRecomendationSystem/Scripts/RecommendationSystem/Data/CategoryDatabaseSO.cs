@@ -7,7 +7,7 @@ namespace RecomendationSystem.Data
     public class CategoryDatabaseSO : ScriptableObject
     {
         [SerializeField]
-        private List<CategoryData> ñategories = new List<CategoryData>();
+        private List<CategoryData> categories = new List<CategoryData>();
 
         private Dictionary<string, CategoryData> idToCategoryDatas;
 
@@ -15,7 +15,7 @@ namespace RecomendationSystem.Data
         {
             idToCategoryDatas = new Dictionary<string, CategoryData>();
 
-            foreach (CategoryData category in ñategories)
+            foreach (CategoryData category in categories)
             {
                 string id = category.GetID();
 
@@ -24,6 +24,11 @@ namespace RecomendationSystem.Data
                     idToCategoryDatas.Add(id, category);
                 }
             }
+        }
+
+        public void SetCategories(List<CategoryData> newCategories)
+        {
+            categories = newCategories;
         }
 
         public bool TryGetCategory(string id, out CategoryData category)
@@ -38,7 +43,7 @@ namespace RecomendationSystem.Data
 
         public IReadOnlyList<CategoryData> GetAllCategories()
         {
-            return ñategories;
+            return categories;
         }
     }
 }

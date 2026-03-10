@@ -13,5 +13,10 @@ namespace RecomendationSystem.Data
         {
             return products;
         }
+
+        public void AddProducts(List<ProductData> newProducts)
+        {
+            products.AddRange(newProducts);
+        }
     }
 }

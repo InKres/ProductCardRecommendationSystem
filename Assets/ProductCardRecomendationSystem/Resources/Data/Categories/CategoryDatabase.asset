@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4ff472d7d0ee78418436f03a368974f, type: 3}
+  m_Name: CategoryDatabase
+  m_EditorClassIdentifier: 
+  categories:
+  - id: 44a80093-6ab6-4c3b-9278-4a5842b88e2b
+    name: "\u041E\u0434\u0435\u0436\u0434\u0430"
+    parentID: 
+    childrenID: []
+  - id: 6fc09986-985d-4c96-ad88-a30d6d9007a2
+    name: "\u041A\u043E\u043C\u043F\u044C\u044E\u0442\u0435\u0440\u043D\u0430\u044F
+      \u043F\u0435\u0440\u0438\u0444\u0435\u0440\u0438\u044F"
+    parentID: 
+    childrenID: []
+  - id: 00b35ac7-1c09-4de9-ac9e-098a6501a6a8
+    name: "\u041A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u0443\u044E\u0449\u0438\u0435
+      \u041F\u041A"
+    parentID: 
+    childrenID: []
+  - id: ec742043-8610-4f8a-aeaa-89125570d295
+    name: "\u0412\u0438\u0434\u0435\u043E\u0438\u0433\u0440\u044B"
+    parentID: 
+    childrenID: []
+  - id: 064fc2a8-bb96-40aa-af3b-506aac43c20d
+    name: "\u041A\u043D\u0438\u0433\u0438"
+    parentID: 
+    childrenID: []
