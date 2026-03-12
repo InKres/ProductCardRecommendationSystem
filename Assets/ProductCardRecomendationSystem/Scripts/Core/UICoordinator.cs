@@ -1,151 +1,152 @@
-//using System;
-//using System.Collections.Generic;
-//using TMPro;
-//using UnityEngine;
-//using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.UI;
+using RecomendationSystem.Data;
+using RecomendationSystem.Recommendation;
 
-//public class UICoordinator : MonoBehaviour
-//{
-//    public event Action OnCloseApplicationEvent;
+public class UICoordinator : MonoBehaviour
+{
+    //[Header("Pages")]
+    //[SerializeField]
+    //private HomePagePresenter homePage;
 
-//    [Header("Top panel components")]
-//    [SerializeField]
-//    private Button showCategoryWindowButton;
-//    [SerializeField]
-//    private Button showHelpWindowButton;
-//    [SerializeField]
-//    private Button closeApplicationButton;
-//    [SerializeField]
-//    private TMP_Text headerText;
+    //[SerializeField]
+    //private CategoryPagePresenter categoryPage;
 
-//    [Header("View components")]
-//    [SerializeField]
-//    private ProductCardsPresenter cardsPresenter;
+    //[SerializeField]
+    //private ProductPagePresenter productPage;
 
-//    [SerializeField]
-//    private WindowView helpWindow;
-//    [SerializeField]
-//    private CategoryWindowView categoryWindow;
-//    [SerializeField]
-//    private ProductWindowPresenter productWindowPresenter;
+    [Header("Catalog Window")]
+    [SerializeField]
+    private UIShowController catalogWindow;
+    [SerializeField]
+    private Button showCatalogButton;
+    [SerializeField]
+    private Button hideCatalogButton;
 
+    [Header("Help Window")]
+    [SerializeField]
+    private UIShowController helpWindow;
+    [SerializeField]
+    private Button showHelpButton;
+    [SerializeField]
+    private Button hideHelpButton;
 
-//    [Header("Settings")]
-//    [SerializeField]
-//    [Tooltip("The display quantity of products that will be shown on the main page")]
-//    private int displayedProductCount = 30;
+    private IRecommendationFacade recommendationFacade;
 
-//    private RecommendationFacade recommendationFacade;
+    private MonoBehaviour currentPage;
 
-//    private bool isInitialized = false;
+    public void InjectFacade(IRecommendationFacade facade)
+    {
+        recommendationFacade = facade;
+    }
 
-//    public void Init(RecommendationFacade facade)
-//    {
-//        if (isInitialized == true) return;
+    public void Init()
+    {
+        HideAllWindowsImmediately();
 
-//        this.recommendationFacade = facade;
+        BindButtons();
 
-//        InitAllWindows();
+        InitializePages();
 
-//        LoadProductsByCategoryName("Главная страница");
+        ShowHomePageImmediately();
+    }
 
-//        SubscribeOnEvents();
+    public void Dispose()
+    {
+        UnbindButtons();
+    }
 
-//        isInitialized = true;
-//    }
+    private void InitializePages()
+    {
+        //homePage.InjectModel(recommendationFacade);
+        //categoryPage.InjectFacade(recommendationFacade);
+        //productPage.InjectFacade(recommendationFacade);
+    }
 
-//    public void Dispose()
-//    {
-//        if (isInitialized == false) return;
+    private void ShowHomePageImmediately()
+    {
+        //currentPage = homePage;
+        //homePage.Show(true);
+    }
 
-//        UnsubscribeFromEvents();
+    private void ShowHomePage()
+    {
+        HideCurrentPage();
 
-//        categoryWindow.Dispose();
-//        helpWindow.Dispose();
+        //currentPage = homePage;
+        //homePage.Show();
+    }
 
-//        isInitialized = false;
-//    }
+    private void ShowCategoryPage(string categoryId)
+    {
+        HideCurrentPage();
 
-//    private void OnDestroy()
-//    {
-//        Dispose();
-//    }
+        //currentPage = categoryPage;
+        //categoryPage.Show(categoryId);
+    }
 
-//    private void InitAllWindows()
-//    {
-//        categoryWindow.Init();
-//        categoryWindow.Hide(true);
+    private void ShowProductPage(IProductData product)
+    {
+        HideCurrentPage();
 
-//        helpWindow.Init();
-//        helpWindow.Hide(true);
+        //currentPage = productPage;
+        //productPage.Show(product);
+    }
 
-//        productWindowPresenter.Hide(true);
-//    }
+    private void HideCurrentPage()
+    {
+        if (currentPage == null)
+            return;
 
-//    private void SubscribeOnEvents()
-//    {
-//        cardsPresenter.OnSelectProductCard += OnProductSelected;
-//        categoryWindow.OnSelectCategoryEvent += LoadProductsByCategoryName;
-//        productWindowPresenter.OnSelectProductCard += OnProductSelected;
+        //if (currentPage == homePage)
+        //    homePage.Hide();
+        //else if (currentPage == categoryPage)
+        //    categoryPage.Hide();
+        //else if (currentPage == productPage)
+        //    productPage.Hide();
+    }
 
-//        showCategoryWindowButton.onClick.AddListener(ShowCategoryWindow);
-//        showHelpWindowButton.onClick.AddListener(ShowHelpWindow);
-//        closeApplicationButton.onClick.AddListener(OnCloseApplication);
-//    }
+    private void ShowCatalogWindow()
+    {
+        catalogWindow.Show(false);
+    }
 
-//    private void UnsubscribeFromEvents()
-//    {
-//        cardsPresenter.OnSelectProductCard -= OnProductSelected;
-//        categoryWindow.OnSelectCategoryEvent -= LoadProductsByCategoryName;
-//        productWindowPresenter.OnSelectProductCard -= OnProductSelected;
+    private void HideCatalogWindow()
+    {
+        catalogWindow.Hide(false);
+    }
 
-//        showCategoryWindowButton.onClick.RemoveListener(ShowCategoryWindow);
-//        showHelpWindowButton.onClick.RemoveListener(ShowHelpWindow);
-//        closeApplicationButton.onClick.RemoveListener(OnCloseApplication);
-//    }
+    private void ShowHelpWindow()
+    {
+        helpWindow.Show(false);
+    }
 
-//    private void LoadProductsByCategoryName(string categoryName)
-//    {
-//        if (recommendationFacade == null)
-//        {
-//            Debug.LogError("RecommendationFacade not found!", this);
-//            return;
-//        }
+    private void HideHelpWindow()
+    {
+        helpWindow.Hide(false);
+    }
 
-//        List<IProductData> categoryProducts = recommendationFacade.GetPopularProductsFromCategory(categoryName, displayedProductCount);
-//        cardsPresenter.InjectModel(categoryProducts);
+    private void HideAllWindowsImmediately()
+    {
+        catalogWindow.Hide(true);
+        helpWindow.Hide(true);
+    }
 
-//        headerText.text = categoryName;
-//    }
+    private void BindButtons()
+    {
+        showCatalogButton.onClick.AddListener(ShowCatalogWindow);
+        showHelpButton.onClick.AddListener(ShowHelpWindow);
 
-//    private void OnProductSelected(IProductData product)
-//    {
-//        if (recommendationFacade == null)
-//        {
-//            Debug.LogError("RecommendationFacade not found!", this);
-//            return;
-//        }
+        hideCatalogButton.onClick.AddListener(HideCatalogWindow);
+        hideHelpButton.onClick.AddListener(HideHelpWindow);
+    }
 
-//        List<IProductData> hybridRecomendations = recommendationFacade.GetHybridForProduct(product, displayedProductCount);
-//        List<IProductData> contentRecommendations = recommendationFacade.GetSimilarProducts(product, displayedProductCount);
+    private void UnbindButtons()
+    {
+        showCatalogButton.onClick.RemoveListener(ShowCatalogWindow);
+        showHelpButton.onClick.RemoveListener(ShowHelpWindow);
 
-//        productWindowPresenter.InjectModel(product);
-//        productWindowPresenter.SetHybridRecommendations(hybridRecomendations);
-//        productWindowPresenter.SetContentRecommendations(contentRecommendations);
-//    }
-
-//    private void ShowHelpWindow()
-//    {
-//        helpWindow.Show();
-//    }
-
-//    private void ShowCategoryWindow()
-//    {
-//        categoryWindow.Show();
-//    }
-
-//    private void OnCloseApplication()
-//    {
-//        OnCloseApplicationEvent?.Invoke();
-//    }
-//}
+        hideCatalogButton.onClick.RemoveListener(HideCatalogWindow);
+        hideHelpButton.onClick.RemoveListener(HideHelpWindow);
+    }
+}
