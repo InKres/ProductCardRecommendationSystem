@@ -1,43 +1,102 @@
-//using System;
-//using UnityEngine;
+using UnityEngine;
+using RecomendationSystem.Data;
+using RecomendationSystem.Encoding;
+using RecomendationSystem.Recommendation;
+using System.Collections.Generic;
 
-//public class Bootstrap : MonoBehaviour
-//{
-//    [Header("Components")]
-//    [SerializeField]
-//    private UICoordinator uiCoordinator;
+public class Bootstrap : MonoBehaviour
+{
+    [Header("Databases")]
+    [SerializeField]
+    private ProductDatabaseSO productDatabase;
 
-//    private ProductRepository repository;
-//    private RecommendationFacade recommendationFacade;
+    [Header("UI")]
+    [SerializeField]
+    private UICoordinator uiCoordinator;
 
-//    private void Start()
-//    {
-//        repository = new ProductRepository();
-//        recommendationFacade = CreateRecommendationFacade();
+    private IRecommendationFacade recommendationFacade;
 
-//        uiCoordinator.Init(recommendationFacade);
-//        uiCoordinator.OnCloseApplicationEvent += CloseApplication;
-//    }
+    private IProductRepository repository;
+    private IVectorCache vectorCache;
+    private FeatureEncoder encoder;
 
-//    private void OnDestroy()
-//    {
-//        uiCoordinator.OnCloseApplicationEvent -= CloseApplication;
-//        uiCoordinator.Dispose();
-//    }
+    private void Awake()
+    {
+        InitRecommendationSystem();
+        InitUI();
+    }
 
-//    private RecommendationFacade CreateRecommendationFacade()
-//    {
-//        PopularityEngine popularityEngine = new PopularityEngine(repository);
-//        ContentBasedEngine contentBasedEngine = new ContentBasedEngine(repository);
-//        HybridEngine hybridEngine = new HybridEngine(popularityEngine, contentBasedEngine);
+    private void OnDestroy()
+    {
+        DisposeUI();
+        DisposeRecommendationSystem();
+    }
 
-//        return new RecommendationFacade(popularityEngine, contentBasedEngine, hybridEngine);
-//    }
+    private void InitRecommendationSystem()
+    {
+        repository = new ProductRepository(productDatabase);
+        repository.Init();
 
-//    private void CloseApplication()
-//    {
-//        Debug.Log("Выход из приложения");
+        IReadOnlyList<IProductData> products = repository.GetAllProducts();
 
-//        Application.Quit();
-//    }
-//}
+        encoder = CreateAndFitEncoder(products);
+
+        vectorCache = CreateVectorCache(encoder, products);
+
+        SimilarItemsEngine similarItemsEngine = CreateSimilarItemsEngine(vectorCache);
+
+        RankingEngine rankingEngine = new RankingEngine();
+
+        recommendationFacade = new RecommendationFacade(
+            repository,
+            similarItemsEngine,
+            rankingEngine
+        );
+    }
+
+    private void DisposeRecommendationSystem()
+    {
+        recommendationFacade = null;
+        vectorCache = null;
+        encoder = null;
+        repository = null;
+    }
+
+    private void InitUI()
+    {
+        uiCoordinator.InjectFacade(recommendationFacade);
+        uiCoordinator.Init();
+    }
+
+    private void DisposeUI()
+    {
+        if (uiCoordinator != null)
+        {
+            uiCoordinator.Dispose();
+        }
+    }
+
+    private FeatureEncoder CreateAndFitEncoder(IReadOnlyList<IProductData> products)
+    {
+        FeatureEncoder encoder = new FeatureEncoder();
+        encoder.Fit(products);
+
+        return encoder;
+    }
+
+    private IVectorCache CreateVectorCache(
+        FeatureEncoder encoder,
+        IReadOnlyList<IProductData> products)
+    {
+        IVectorCache cache = new VectorCache(encoder);
+        cache.Build(products);
+
+        return cache;
+    }
+
+    private SimilarItemsEngine CreateSimilarItemsEngine(IVectorCache cache)
+    {
+        SimilarityCalculator similarityCalculator = new SimilarityCalculator();
+        return new SimilarItemsEngine(similarityCalculator, cache);
+    }
+}
