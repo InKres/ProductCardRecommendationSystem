@@ -13,6 +13,13 @@ namespace RecomendationSystem.Data
         private string name;
 
         [SerializeField]
+        [TextArea(3, 10)]
+        private string description;
+
+        [SerializeField]
+        private Sprite image;
+
+        [SerializeField]
         private float price;
 
         [SerializeField]
@@ -57,6 +64,16 @@ namespace RecomendationSystem.Data
         public string GetName()
         {
             return name;
+        }
+
+        public string GetDescription()
+        {
+            return description;
+        }
+
+        public Sprite GetImage()
+        {
+            return image;
         }
 
         public float GetPrice()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace RecomendationSystem.Data
 {
@@ -6,6 +7,8 @@ namespace RecomendationSystem.Data
     {
         string GetID();
         string GetName();
+        string GetDescription();
+        Sprite GetImage();
         float GetPrice();
         string GetCategoryID();
         int GetPopularity();

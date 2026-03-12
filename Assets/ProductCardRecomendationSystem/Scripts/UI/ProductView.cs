@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 public class ProductView : MonoBehaviour
 {
-    //public event Action<IProductData> OnClickByProductView;
+    public event Action<ProductView> OnClick = delegate { };
 
     [Header("Components")]
-    [SerializeField]
-    private Button button;
+    [SerializeField] private Button button;
 
     [Space]
     [SerializeField]
@@ -21,141 +20,89 @@ public class ProductView : MonoBehaviour
     [SerializeField]
     private Image image;
     [SerializeField]
-    private TMP_Text brandText;
-    [SerializeField]
     private TMP_Text purchasedQuantityText;
     [SerializeField]
     private TMP_Text priceText;
 
-    //private IProductData productData;
-
-    private bool isInit;
+    private bool isInitialized;
 
     public void Init()
     {
-        if (isInit) return;
+        if (isInitialized)
+            return;
 
         if (button != null)
-        {
-            button.onClick.AddListener(OnClickByProduct);
-        }
+            button.onClick.AddListener(OnClicked);
 
-        isInit = true;
+        isInitialized = true;
     }
 
     public void Dispose()
     {
-        if (isInit == false) return;
+        if (!isInitialized)
+            return;
 
         if (button != null)
-        {
-            button.onClick.RemoveListener(OnClickByProduct);
-        }
+            button.onClick.RemoveListener(OnClicked);
 
-        isInit = false;
+        isInitialized = false;
     }
 
-    //public void Setup(IProductData product)
-    //{
-    //    if (product == null)
-    //    {
-    //        Debug.LogError("Product data not found!!!", this);
+    public void SetName(string productName)
+    {
+        if (nameText != null)
+            nameText.text = productName;
+    }
 
-    //        return;
-    //    }
+    public void SetDescription(string description)
+    {
+        if (descriptionText != null)
+            descriptionText.text = description;
+    }
 
-    //    productData = product;
+    public void SetImage(Sprite productImage)
+    {
+        if (image != null)
+        {
+            if (productImage != null)
+            {
+                image.sprite = productImage;
+            }
+        }
+    }
 
-    //    SetRatingText(product.GetRating());
-    //    SetNameText(product.GetName());
-    //    SetDescriptionText(product.GetDescription());
-    //    SetImage(product.GetImage());
-    //    SetBrandText(product.GetBrand());
-    //    SetPurchasedQuantityText(product.GetPurchasedQuantity());
-    //    SetPriceText(product.GetPrice());
-    //}
+    public void SetRating(float rating)
+    {
+        if (ratingText != null)
+            ratingText.text = rating.ToString();
+    }
+
+    public void SetPrice(float price)
+    {
+        if (priceText != null)
+            priceText.text = price.ToString();
+    }
+
+    public void SetPurchasedQuantity(int quantity)
+    {
+        if (purchasedQuantityText != null)
+            purchasedQuantityText.text = quantity.ToString();
+    }
 
     public void Clear()
     {
-        //productData = null;
+        SetName(string.Empty);
+        SetDescription(string.Empty);
+        SetPrice(0);
+        SetRating(0);
+        SetPurchasedQuantity(0);
 
-        if (ratingText != null)
-            ratingText.text = string.Empty;
-
-        if (nameText != null)
-            nameText.text = string.Empty;
-
-        if (descriptionText != null)
-            descriptionText.text = string.Empty;
-
-        if (brandText != null)
-            brandText.text = string.Empty;
-
-        if (purchasedQuantityText != null)
-            purchasedQuantityText.text = string.Empty;
-
-        if (priceText != null)
-            priceText.text = string.Empty;
+        if (image != null)
+            image.sprite = null;
     }
 
-    private void OnClickByProduct()
+    private void OnClicked()
     {
-        //OnClickByProductView?.Invoke(productData);
-    }
-
-    private void SetRatingText(float rating)
-    {
-        if (ratingText != null)
-        {
-            ratingText.text = rating.ToString();
-        }
-    }
-
-    private void SetNameText(string name)
-    {
-        if (nameText != null)
-        {
-            nameText.text = name;
-        }
-    }
-
-    private void SetDescriptionText(string description)
-    {
-        if (descriptionText != null)
-        {
-            descriptionText.text = description;
-        }
-    }
-
-    private void SetImage(Sprite productImage)
-    {
-        if (image != null && productImage != null)
-        {
-            image.sprite = productImage;
-        }
-    }
-
-    private void SetBrandText(string brand)
-    {
-        if (brandText != null)
-        {
-            brandText.text = brand;
-        }
-    }
-
-    private void SetPurchasedQuantityText(int value)
-    {
-        if (purchasedQuantityText != null)
-        {
-            purchasedQuantityText.text = value.ToString();
-        }
-    }
-
-    private void SetPriceText(float price)
-    {
-        if (priceText != null)
-        {
-            priceText.text = price.ToString();
-        }
+        OnClick.Invoke(this);
     }
 }
