@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RecomendationSystem.Recommendation
 {
-    public class RecommendationFacade
+    public class RecommendationFacade : IRecommendationFacade
     {
         private readonly IProductRepository productRepository;
         private readonly SimilarItemsEngine similarItemsEngine;
