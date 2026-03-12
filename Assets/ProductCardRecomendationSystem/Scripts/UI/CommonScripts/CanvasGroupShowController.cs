@@ -37,7 +37,6 @@ public class CanvasGroupShowController : MonoBehaviour
         }
     }
 
-    [ContextMenu("Show")]
     public void Show()
     {
         StopAllCoroutines();
@@ -58,7 +57,6 @@ public class CanvasGroupShowController : MonoBehaviour
         StartCoroutine(ShowCoroutine(speed));
     }
 
-    [ContextMenu("Hide")]
     public void Hide()
     {
         IsShown = false;
