@@ -19,9 +19,6 @@ namespace RecomendationSystem.Data
         private int popularity;
 
         [SerializeField]
-        private float rating;
-
-        [SerializeField]
         private int buyersCount;
 
         [SerializeField]
@@ -38,7 +35,6 @@ namespace RecomendationSystem.Data
             float price,
             string categoryID,
             int popularity,
-            float rating,
             int buyersCount,
             List<FeatureData> features)
         {
@@ -48,7 +44,6 @@ namespace RecomendationSystem.Data
             this.categoryID = categoryID;
             this.popularity = popularity;
             this.buyersCount = buyersCount;
-            this.rating = rating;
             this.features = features;
 
             BuildFeatureKeyIndex();
@@ -77,11 +72,6 @@ namespace RecomendationSystem.Data
         public int GetPopularity()
         {
             return popularity;
-        }
-
-        public float GetRating()
-        {
-            return rating;
         }
 
         public int GetBuyersCount()

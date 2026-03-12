@@ -31,7 +31,6 @@ namespace RecomendationSystem.DataGeneration
                     price: Random.Range(500f, 150000f),
                     categoryID: category.GetID(),
                     popularity: Random.Range(0, 100),
-                    rating: GetRating(),
                     buyersCount: Random.Range(0, 5000),
                     features);
 
@@ -44,12 +43,6 @@ namespace RecomendationSystem.DataGeneration
         private static string GenerateName(CategoryData category)
         {
             return category.GetName() + " " + Random.Range(1000, 9999);
-        }
-
-        private static float GetRating()
-        {
-            float rawValue = Random.Range(0f, 5f);
-            return Mathf.Round(rawValue * 10f) / 10f;
         }
     }
 }
