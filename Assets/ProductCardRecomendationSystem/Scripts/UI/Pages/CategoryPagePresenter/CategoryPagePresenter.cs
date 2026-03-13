@@ -3,46 +3,21 @@ using RecomendationSystem.Data;
 using RecomendationSystem.Recommendation;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>
+public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>, IShowablePanel
 {
-    public enum SortMethod
-    {
-        Popularity,
-        PriceAscending,
-        PriceDescending,
-        BuyersCount
-    }
-
-    public class SortMethodSettings
-    {
-        [SerializeField]
-        private string m_SortMethodName;
-        public string SortMethodName => m_SortMethodName;
-
-        [SerializeField]
-        private SortMethod m_SortMethod = SortMethod.Popularity;
-        public SortMethod SortMethod => m_SortMethod;
-    }
-
     public event Action<IProductData> OnProductSelected;
 
     [Header("Components")]
     [SerializeField]
-    private Dropdown dropdown;
+    private SortMethodSelector sortMethodSelector;
     [SerializeField]
     private ProductCollectionView productCollectionView;
-
     [SerializeField]
     private UIShowController showController;
 
     [Header("Settings")]
-    [SerializeField]
-    private List<SortMethodSettings> sortMethods = new List<SortMethodSettings>();
-
     [SerializeField]
     private int itemsPerPage = 30;
 
@@ -53,26 +28,35 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>
 
     protected override void OnInjectModel(IRecommendationFacade model)
     {
-        InitDropdown();
-
         InitSortFunctions();
 
-        dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        sortMethodSelector.Init();
+        sortMethodSelector.OnSortMethodSelected += ShowProductsByCurrentSortMethod;
+
+        productCollectionView.OnProductSelected += OnSelectProduct;
     }
 
     protected override void OnRemoveModel(IRecommendationFacade model)
     {
-        dropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
+        productCollectionView.OnProductSelected -= OnSelectProduct;
+        productCollectionView.Dispose();
+
+        sortMethodSelector.OnSortMethodSelected -= ShowProductsByCurrentSortMethod;
+        sortMethodSelector.Dispose();
     }
 
     public void Init(string categoryUID)
     {
-        if (isInit) return;
+        if (isInit)
+        {
+            Dispose();
+        }
 
         this.categoryUID = categoryUID;
 
-        //Тут нужно вывести карточки по 1 виду сортирвки.
-        Hide();
+        sortMethodSelector.ResetSelector();
+
+        Show();
 
         isInit = true;
     }
@@ -84,9 +68,8 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>
         productCollectionView.Dispose();
 
         categoryUID = String.Empty;
-        dropdown.value = 0;
 
-        Show();
+        Hide();
 
         isInit = false;
     }
@@ -101,26 +84,25 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>
         showController.Hide(isImmediately);
     }
 
-    private void InitDropdown()
-    {
-        List<string> options = new List<string>();
-
-        foreach (SortMethodSettings sortMethod in sortMethods)
-        {
-            options.Add(sortMethod.SortMethodName);
-        }
-
-        dropdown.AddOptions(options);
-        dropdown.value = 0;
-    }
-
     private void InitSortFunctions()
     {
         sortMethodToAction = new Dictionary<SortMethod, Action>();
+
         sortMethodToAction.Add(SortMethod.Popularity, SortByPopularity);
         sortMethodToAction.Add(SortMethod.PriceAscending, SortByPriceAscending);
         sortMethodToAction.Add(SortMethod.PriceDescending, SortByPriceDescending);
         sortMethodToAction.Add(SortMethod.BuyersCount, SortByBuyersCount);
+    }
+
+    private void ShowProductsByCurrentSortMethod(SortMethod method)
+    {
+        if (model != null)
+        {
+            if (sortMethodToAction.TryGetValue(method, out Action sortMethod))
+            {
+                sortMethod?.Invoke();
+            }
+        }
     }
 
     private void OnSelectProduct(IProductData data)
@@ -128,36 +110,43 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>
         OnProductSelected?.Invoke(data);
     }
 
-    private void OnDropdownValueChanged(int value)
-    {
-        
-    }
-
-    private void ShowProductsByCurrentSortMethod(SortMethod method)
-    {
-        if (model != null)
-        {
-            
-        }
-    }
-
     private void SortByPopularity()
     {
+        if (!string.IsNullOrEmpty(categoryUID))
+        {
+            IReadOnlyList<IProductData> products = model.GetPopularProducts(categoryUID, itemsPerPage);
 
+            productCollectionView.Init(products);
+        }
     }
 
     private void SortByPriceAscending()
     {
+        if (!string.IsNullOrEmpty(categoryUID))
+        {
+            IReadOnlyList<IProductData> products = model.GetProductsSortedByAscendingPrice(categoryUID, itemsPerPage);
 
+            productCollectionView.Init(products);
+        }
     }
 
     private void SortByPriceDescending()
     {
+        if (!string.IsNullOrEmpty(categoryUID))
+        {
+            IReadOnlyList<IProductData> products = model.GetProductsSortedByDescendingPrice(categoryUID, itemsPerPage);
 
+            productCollectionView.Init(products);
+        }
     }
 
     private void SortByBuyersCount()
     {
+        if (!string.IsNullOrEmpty(categoryUID))
+        {
+            IReadOnlyList<IProductData> products = model.GetMostPurchasedProducts(categoryUID, itemsPerPage);
 
+            productCollectionView.Init(products);
+        }
     }
 }

@@ -19,7 +19,10 @@ public class ProductCollectionView : MonoBehaviour
 
     public void Init(IReadOnlyList<IProductData> products)
     {
-        if (isInit) return;
+        if (isInit)
+        {
+            Dispose();
+        }
 
         CreateViews(products);
 
