@@ -7,33 +7,45 @@ namespace RecomendationSystem.Recommendation
     public class RankingEngine
     {
         /// <summary>
-        /// —амые попул€рные товары.
+        /// ѕолучить самые попул€рные товары.
         /// </summary>
-        public IReadOnlyList<IProductData> SelectMostPopular(IReadOnlyList<IProductData> candidates, int count)
+        public IReadOnlyList<IProductData> GetPopularProducts(IReadOnlyList<IProductData> products, int count)
         {
-            return candidates
-                .OrderByDescending(p => p.GetPopularity())
+            return products
+                .OrderByDescending(product => product.GetPopularity())
                 .Take(count)
                 .ToList();
         }
 
         /// <summary>
-        /// —ортировка по цене.
+        /// ѕолучить товары отсортированные по возрастанию цены.
         /// </summary>
-        public IReadOnlyList<IProductData> SortByPriceAscending(IReadOnlyList<IProductData> items)
+        public IReadOnlyList<IProductData> GetProductsSortedByAscendingPrice(IReadOnlyList<IProductData> products, int count)
         {
-            return items
-                .OrderBy(p => p.GetPrice())
+            return products
+                .OrderBy(product => product.GetPrice())
+                .Take(count)
                 .ToList();
         }
 
         /// <summary>
-        /// —амые покупаемые.
+        /// ѕолучить товары отсортированные по убыванию цены.
         /// </summary>
-        public IReadOnlyList<IProductData> SelectMostPurchased(IReadOnlyList<IProductData> items, int count)
+        public IReadOnlyList<IProductData> GetProductsSortedByDescendingPrice(IReadOnlyList<IProductData> products, int count)
         {
-            return items
-                .OrderByDescending(p => p.GetBuyersCount())
+            return products
+                .OrderByDescending(product => product.GetPrice())
+                .Take(count)
+                .ToList();
+        }
+
+        /// <summary>
+        /// ѕолучить товары с самым большим количеством покупателей.
+        /// </summary>
+        public IReadOnlyList<IProductData> GetMostPurchasedProducts(IReadOnlyList<IProductData> products, int count)
+        {
+            return products
+                .OrderByDescending(product => product.GetBuyersCount())
                 .Take(count)
                 .ToList();
         }

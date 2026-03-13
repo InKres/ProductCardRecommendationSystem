@@ -20,7 +20,7 @@ namespace RecomendationSystem.Recommendation
         /// <summary>
         /// ¬озвращает товары, наиболее похожие на указанный.
         /// </summary>
-        public IReadOnlyList<IProductData> FindSimilar(IProductData targetItem, IReadOnlyList<IProductData> candidates, int count)
+        public IReadOnlyList<IProductData> GetSimilar(IProductData targetItem, IReadOnlyList<IProductData> candidates, int count)
         {
             float[] targetVector = vectorCache.GetVector(targetItem);
 

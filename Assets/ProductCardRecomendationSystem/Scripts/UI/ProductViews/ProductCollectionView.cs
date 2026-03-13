@@ -1,10 +1,9 @@
-using MVP;
 using RecomendationSystem.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProductCollectionPresenter : PresenterBehaviour<IReadOnlyList<IProductData>>
+public class ProductCollectionView : MonoBehaviour
 {
     public event Action<IProductData> OnProductSelected = delegate { };
 
@@ -16,14 +15,24 @@ public class ProductCollectionPresenter : PresenterBehaviour<IReadOnlyList<IProd
 
     private Dictionary<ProductView, IProductData> viewsToProductData;
 
-    protected override void OnInjectModel(IReadOnlyList<IProductData> products)
+    private bool isInit;
+
+    public void Init(IReadOnlyList<IProductData> products)
     {
+        if (isInit) return;
+
         CreateViews(products);
+
+        isInit = true;
     }
 
-    protected override void OnRemoveModel(IReadOnlyList<IProductData> model)
+    public void Dispose()
     {
+        if (!isInit) return;
+
         DestroyViews();
+
+        isInit = false;
     }
 
     private void CreateViews(IReadOnlyList<IProductData> products)

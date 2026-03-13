@@ -5004,7 +5004,6 @@ MonoBehaviour:
   nameText: {fileID: 428799941}
   descriptionText: {fileID: 2003636091}
   image: {fileID: 82422937}
-  brandText: {fileID: 2128584057}
   purchasedQuantityText: {fileID: 1508690819}
   priceText: {fileID: 2092407426}
 --- !u!114 &763157495
@@ -8201,6 +8200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc3d7018a54f4144b8dd4bdc0c3a307f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  productDatabase: {fileID: 0}
   uiCoordinator: {fileID: 1998200375}
 --- !u!1 &1101062416
 GameObject:
@@ -13415,16 +13415,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa2295cb4d6b954baff41d995444707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showCategoryWindowButton: {fileID: 809604553}
-  showHelpWindowButton: {fileID: 766700949}
-  closeApplicationButton: {fileID: 1549511684}
-  headerText: {fileID: 200022591}
-  cardsPresenter: {fileID: 1292546089}
+  catalogWindow: {fileID: 0}
+  showCatalogButton: {fileID: 0}
+  hideCatalogButton: {fileID: 0}
   helpWindow: {fileID: 332108335}
-  categoryWindow: {fileID: 1761371003}
-  productWindowPresenter: {fileID: 1529950089}
-  displayedProductCount: 30
-  isInitialized: 0
+  showHelpButton: {fileID: 0}
+  hideHelpButton: {fileID: 0}
 --- !u!1 &2003636089
 GameObject:
   m_ObjectHideFlags: 0

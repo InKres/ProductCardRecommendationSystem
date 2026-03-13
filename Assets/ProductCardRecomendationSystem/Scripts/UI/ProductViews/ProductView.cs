@@ -24,28 +24,30 @@ public class ProductView : MonoBehaviour
     [SerializeField]
     private TMP_Text priceText;
 
-    private bool isInitialized;
+    private bool isInit;
 
     public void Init()
     {
-        if (isInitialized)
-            return;
+        if (isInit) return;
 
         if (button != null)
+        {
             button.onClick.AddListener(OnClicked);
+        }
 
-        isInitialized = true;
+        isInit = true;
     }
 
     public void Dispose()
     {
-        if (!isInitialized)
-            return;
+        if (!isInit) return;
 
         if (button != null)
+        {
             button.onClick.RemoveListener(OnClicked);
+        }
 
-        isInitialized = false;
+        isInit = false;
     }
 
     public void SetName(string productName)
