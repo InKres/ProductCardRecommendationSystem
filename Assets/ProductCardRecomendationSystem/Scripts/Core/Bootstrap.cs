@@ -1,14 +1,16 @@
-using UnityEngine;
 using RecomendationSystem.Data;
 using RecomendationSystem.Encoding;
 using RecomendationSystem.Recommendation;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
 {
     [Header("Databases")]
     [SerializeField]
     private ProductDatabaseSO productDatabase;
+    [SerializeField]
+    private CategoryDatabaseSO categoryDatabase;
 
     [Header("UI")]
     [SerializeField]
@@ -45,12 +47,12 @@ public class Bootstrap : MonoBehaviour
 
         SimilarItemsEngine similarItemsEngine = CreateSimilarItemsEngine(vectorCache);
 
-        RankingEngine rankingEngine = new RankingEngine();
+        PopularItemsEngine popularItemsEngine = new PopularItemsEngine();
 
         recommendationFacade = new RecommendationFacade(
             repository,
             similarItemsEngine,
-            rankingEngine
+            popularItemsEngine
         );
     }
 
@@ -60,20 +62,6 @@ public class Bootstrap : MonoBehaviour
         vectorCache = null;
         encoder = null;
         repository = null;
-    }
-
-    private void InitUI()
-    {
-        uiCoordinator.InjectFacade(recommendationFacade);
-        uiCoordinator.Init();
-    }
-
-    private void DisposeUI()
-    {
-        if (uiCoordinator != null)
-        {
-            uiCoordinator.Dispose();
-        }
     }
 
     private FeatureEncoder CreateAndFitEncoder(IReadOnlyList<IProductData> products)
@@ -98,5 +86,22 @@ public class Bootstrap : MonoBehaviour
     {
         SimilarityCalculator similarityCalculator = new SimilarityCalculator();
         return new SimilarItemsEngine(similarityCalculator, cache);
+    }
+
+    private void InitUI()
+    {
+        uiCoordinator.Init(recommendationFacade, categoryDatabase.GetAllCategories());
+        uiCoordinator.OnClickCloseApplication += CloseApplication;
+    }
+
+    private void DisposeUI()
+    {
+        uiCoordinator.OnClickCloseApplication -= CloseApplication;
+        uiCoordinator.Dispose();
+    }
+
+    private void CloseApplication()
+    {
+        Application.Quit();
     }
 }
