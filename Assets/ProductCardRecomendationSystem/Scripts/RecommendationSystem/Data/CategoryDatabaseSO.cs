@@ -26,6 +26,11 @@ namespace RecomendationSystem.Data
             }
         }
 
+        public void Dispose()
+        {
+            idToCategoryDatas.Clear();
+        }
+
         public void SetCategories(List<CategoryData> newCategories)
         {
             categories = newCategories;
