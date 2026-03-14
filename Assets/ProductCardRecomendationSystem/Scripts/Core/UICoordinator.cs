@@ -1,152 +1,209 @@
-using UnityEngine;
-using UnityEngine.UI;
 using RecomendationSystem.Data;
 using RecomendationSystem.Recommendation;
+using System;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class UICoordinator : MonoBehaviour
 {
-    //[Header("Pages")]
-    //[SerializeField]
-    //private HomePagePresenter homePage;
+    public event Action OnClickCloseApplication;
 
-    //[SerializeField]
-    //private CategoryPagePresenter categoryPage;
+    [Header("Presenters")]
+    [SerializeField]
+    private HomePagePresenter homePage;
+    [SerializeField]
+    private CategoryPagePresenter categoryPage;
+    [SerializeField]
+    private ProductPagePresenter productPage;
+    [SerializeField]
+    private CatalogWindowPresenter catalogWindow;
 
-    //[SerializeField]
-    //private ProductPagePresenter productPage;
-
-    [Header("Catalog Window")]
+    [Header("Other components")]
     [SerializeField]
-    private UIShowController catalogWindow;
+    private TMP_Text headerText;
     [SerializeField]
-    private Button showCatalogButton;
+    private Button homeButton;
     [SerializeField]
-    private Button hideCatalogButton;
-
-    [Header("Help Window")]
+    private Button backToCategoryButton;
     [SerializeField]
-    private UIShowController helpWindow;
+    private Button catalogButton;
     [SerializeField]
-    private Button showHelpButton;
-    [SerializeField]
-    private Button hideHelpButton;
+    private Button closeApplicationButton;
 
     private IRecommendationFacade recommendationFacade;
 
-    private MonoBehaviour currentPage;
+    private List<IShowablePanel> panels = new List<IShowablePanel>();
 
-    public void InjectFacade(IRecommendationFacade facade)
+    private bool isInit;
+
+    public void Init(IRecommendationFacade facade, IReadOnlyList<ICategoryData> categories)
     {
+        if (isInit) return;
+
+        if (facade == null)
+        {
+            Debug.LogError($"Recomendation facade in not found!", this);
+            return;
+        }
+
         recommendationFacade = facade;
-    }
 
-    public void Init()
-    {
-        HideAllWindowsImmediately();
+        homePage.InjectModel(recommendationFacade);
+        categoryPage.InjectModel(recommendationFacade);
+        productPage.InjectModel(recommendationFacade);
+        catalogWindow.InjectModel(categories);
 
-        BindButtons();
+        homeButton.onClick.AddListener(OnClickHomeButton);
+        backToCategoryButton.onClick.AddListener(OnClickBackToCategoryButton);
+        catalogButton.onClick.AddListener(OnClickCatalogButton);
+        closeApplicationButton.onClick.AddListener(OnClickCloseApplicationButton);
 
-        InitializePages();
+        homePage.OnProductSelected += OnSelectProcuct;
+        categoryPage.OnProductSelected += OnSelectProcuct;
+        productPage.OnProductSelected += OnSelectProcuct;
+        catalogWindow.OnCategorySelected += OnSelectCategory;
 
-        ShowHomePageImmediately();
+        PreparePanels();
+
+        catalogWindow.Hide(true);
+        ShowPage(homePage, OnShowHomePage);
+
+        isInit = true;
     }
 
     public void Dispose()
     {
-        UnbindButtons();
+        if (!isInit) return;
+
+        homePage.OnProductSelected -= OnSelectProcuct;
+        categoryPage.OnProductSelected -= OnSelectProcuct;
+        productPage.OnProductSelected -= OnSelectProcuct;
+        catalogWindow.OnCategorySelected -= OnSelectCategory;
+
+        homeButton.onClick.RemoveListener(OnClickHomeButton);
+        backToCategoryButton.onClick.RemoveListener(OnClickBackToCategoryButton);
+        catalogButton.onClick.RemoveListener(OnClickCatalogButton);
+        closeApplicationButton.onClick.RemoveListener(OnClickCloseApplicationButton);
+
+        homePage.RemoveModel();
+        categoryPage.RemoveModel();
+        productPage.RemoveModel();
+        catalogWindow.RemoveModel();
+
+        isInit = false;
     }
 
-    private void InitializePages()
+    private void PreparePanels()
     {
-        //homePage.InjectModel(recommendationFacade);
-        //categoryPage.InjectFacade(recommendationFacade);
-        //productPage.InjectFacade(recommendationFacade);
+        panels.Add(homePage);
+        panels.Add(categoryPage);
+        panels.Add(productPage);
+        panels.Add(catalogWindow);
     }
 
-    private void ShowHomePageImmediately()
+    private void OnClickHomeButton()
     {
-        //currentPage = homePage;
-        //homePage.Show(true);
+        ShowPage(homePage, OnShowHomePage);
     }
 
-    private void ShowHomePage()
+    private void OnClickBackToCategoryButton()
     {
-        HideCurrentPage();
-
-        //currentPage = homePage;
-        //homePage.Show();
+        ShowPage(categoryPage, OnShowCategoryPage);
     }
 
-    private void ShowCategoryPage(string categoryId)
+    private void OnClickCatalogButton()
     {
-        HideCurrentPage();
-
-        //currentPage = categoryPage;
-        //categoryPage.Show(categoryId);
+        if (catalogWindow.IsShown)
+        {
+            catalogWindow.Hide();
+        }
+        else
+        {
+            catalogWindow.Show();
+        }
     }
 
-    private void ShowProductPage(IProductData product)
+    private void OnClickCloseApplicationButton()
     {
-        HideCurrentPage();
-
-        //currentPage = productPage;
-        //productPage.Show(product);
+        OnClickCloseApplication?.Invoke();
     }
 
-    private void HideCurrentPage()
+    private void ShowPage(IShowablePanel page, Action OnShowAction)
     {
-        if (currentPage == null)
-            return;
+        OnShowAction?.Invoke();
 
-        //if (currentPage == homePage)
-        //    homePage.Hide();
-        //else if (currentPage == categoryPage)
-        //    categoryPage.Hide();
-        //else if (currentPage == productPage)
-        //    productPage.Hide();
+        HideAllPanels();
+        ShowPanel(page);
     }
 
-    private void ShowCatalogWindow()
+    private void OnShowHomePage()
     {
-        catalogWindow.Show(false);
+        headerText.text = "Главная страница";
+
+        categoryPage.RemoveCategory();
+        productPage.RemoveProduct();
+
+        homeButton.gameObject.SetActive(false);
+        backToCategoryButton.gameObject.SetActive(false);
     }
 
-    private void HideCatalogWindow()
+    private void OnShowCategoryPage()
     {
-        catalogWindow.Hide(false);
+        productPage.RemoveProduct();
+
+        homeButton.gameObject.SetActive(true);
+        backToCategoryButton.gameObject.SetActive(false);
     }
 
-    private void ShowHelpWindow()
+    private void OnShowProductPage()
     {
-        helpWindow.Show(false);
+        headerText.text = "Страница продукта";
+
+        homeButton.gameObject.SetActive(true);
+        
+        if (categoryPage.IsHasCategory)
+        {
+            backToCategoryButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            backToCategoryButton.gameObject.SetActive(false);
+        }
     }
 
-    private void HideHelpWindow()
+    private void ShowPanel(IShowablePanel panel)
     {
-        helpWindow.Hide(false);
+        panel.Show();
     }
 
-    private void HideAllWindowsImmediately()
+    private void HidePanel(IShowablePanel panel)
     {
-        catalogWindow.Hide(true);
-        helpWindow.Hide(true);
+        panel.Hide();
     }
 
-    private void BindButtons()
+    private void HideAllPanels()
     {
-        showCatalogButton.onClick.AddListener(ShowCatalogWindow);
-        showHelpButton.onClick.AddListener(ShowHelpWindow);
-
-        hideCatalogButton.onClick.AddListener(HideCatalogWindow);
-        hideHelpButton.onClick.AddListener(HideHelpWindow);
+        foreach (IShowablePanel panel in panels)
+        {
+            HidePanel(panel);
+        }
     }
 
-    private void UnbindButtons()
+    private void OnSelectProcuct(IProductData product)
     {
-        showCatalogButton.onClick.RemoveListener(ShowCatalogWindow);
-        showHelpButton.onClick.RemoveListener(ShowHelpWindow);
+        productPage.SetProduct(product);
 
-        hideCatalogButton.onClick.RemoveListener(HideCatalogWindow);
-        hideHelpButton.onClick.RemoveListener(HideHelpWindow);
+        ShowPage(productPage, OnShowProductPage);
+    }
+
+    private void OnSelectCategory(ICategoryData category)
+    {
+        headerText.text = $"Категория \"{category.GetName()}\"";
+
+        categoryPage.SetCategory(category.GetID());
+
+        ShowPage(categoryPage, OnShowCategoryPage);
     }
 }
