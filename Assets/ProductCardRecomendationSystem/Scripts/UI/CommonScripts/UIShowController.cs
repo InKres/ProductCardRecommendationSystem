@@ -5,6 +5,8 @@ public class UIShowController : MonoBehaviour
     [SerializeField]
     private CanvasGroupShowController showController;
 
+    public bool IsShown => showController.IsShown;
+
     public void Show(bool isImmediately = false)
     {
         if (isImmediately)

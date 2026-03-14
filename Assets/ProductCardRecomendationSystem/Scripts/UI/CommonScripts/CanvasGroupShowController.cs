@@ -14,10 +14,21 @@ public class CanvasGroupShowController : MonoBehaviour
     [SerializeField]
     public float speed = 4f;
 
+    [SerializeField]
+    private bool m_IsShown = true;
     public bool IsShown
     {
-        get;
-        private set;
+        get
+        {
+            return m_IsShown;
+        }
+        private set
+        {
+            if (value != m_IsShown)
+            {
+                m_IsShown = value;
+            }
+        }
     }
 
     private void Reset()
