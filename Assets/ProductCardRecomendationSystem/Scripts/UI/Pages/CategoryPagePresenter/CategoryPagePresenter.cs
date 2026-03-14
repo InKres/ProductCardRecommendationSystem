@@ -21,10 +21,12 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>, 
     [SerializeField]
     private int itemsPerPage = 30;
 
+    private SortingEngine sortingEngine = new SortingEngine();
+
     private Dictionary<SortMethod, Action> sortMethodToAction;
 
     private string categoryUID;
-    private bool isInit;
+    public bool IsHasCategory => !string.IsNullOrEmpty(categoryUID);
 
     protected override void OnInjectModel(IRecommendationFacade model)
     {
@@ -45,33 +47,20 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>, 
         sortMethodSelector.Dispose();
     }
 
-    public void Init(string categoryUID)
+    public void SetCategory(string categoryUID)
     {
-        if (isInit)
+        if (IsHasCategory)
         {
-            Dispose();
+            RemoveCategory();
         }
 
         this.categoryUID = categoryUID;
-
         sortMethodSelector.ResetSelector();
-
-        Show();
-
-        isInit = true;
     }
 
-    public void Dispose()
+    public void RemoveCategory()
     {
-        if (!isInit) return;
-
-        productCollectionView.Dispose();
-
-        categoryUID = String.Empty;
-
-        Hide();
-
-        isInit = false;
+        this.categoryUID = string.Empty;
     }
 
     public void Show(bool isImmediately = true)
@@ -112,41 +101,53 @@ public class CategoryPagePresenter : PresenterBehaviour<IRecommendationFacade>, 
 
     private void SortByPopularity()
     {
-        if (!string.IsNullOrEmpty(categoryUID))
+        if (IsHasCategory)
         {
             IReadOnlyList<IProductData> products = model.GetPopularProducts(categoryUID, itemsPerPage);
 
-            productCollectionView.Init(products);
+            productCollectionView.Init(sortingEngine.GetPopularProducts(products));
+            return;
         }
+
+        productCollectionView.Dispose();
     }
 
     private void SortByPriceAscending()
     {
-        if (!string.IsNullOrEmpty(categoryUID))
+        if (IsHasCategory)
         {
-            IReadOnlyList<IProductData> products = model.GetProductsSortedByAscendingPrice(categoryUID, itemsPerPage);
+            IReadOnlyList<IProductData> products = model.GetPopularProducts(categoryUID, itemsPerPage);
 
-            productCollectionView.Init(products);
+            productCollectionView.Init(sortingEngine.GetProductsSortedByAscendingPrice(products));
+            return;
         }
+
+        productCollectionView.Dispose();
     }
 
     private void SortByPriceDescending()
     {
-        if (!string.IsNullOrEmpty(categoryUID))
+        if (IsHasCategory)
         {
-            IReadOnlyList<IProductData> products = model.GetProductsSortedByDescendingPrice(categoryUID, itemsPerPage);
+            IReadOnlyList<IProductData> products = model.GetPopularProducts(categoryUID, itemsPerPage);
 
-            productCollectionView.Init(products);
+            productCollectionView.Init(sortingEngine.GetProductsSortedByDescendingPrice(products));
+            return;
         }
+
+        productCollectionView.Dispose();
     }
 
     private void SortByBuyersCount()
     {
-        if (!string.IsNullOrEmpty(categoryUID))
+        if (IsHasCategory)
         {
-            IReadOnlyList<IProductData> products = model.GetMostPurchasedProducts(categoryUID, itemsPerPage);
+            IReadOnlyList<IProductData> products = model.GetPopularProducts(categoryUID, itemsPerPage);
 
-            productCollectionView.Init(products);
+            productCollectionView.Init(sortingEngine.GetMostPurchasedProducts(products));
+            return;
         }
+
+        productCollectionView.Dispose();
     }
 }

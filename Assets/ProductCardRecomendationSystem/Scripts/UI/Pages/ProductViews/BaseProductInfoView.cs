@@ -1,54 +1,22 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProductView : MonoBehaviour
+public class BaseProductInfoView : MonoBehaviour
 {
-    public event Action<ProductView> OnClick = delegate { };
-
-    [Header("Components")]
-    [SerializeField] private Button button;
-
-    [Space]
+    [Header("Base info")]
     [SerializeField]
-    private TMP_Text ratingText;
+    protected TMP_Text ratingText;
     [SerializeField]
-    private TMP_Text nameText;
+    protected TMP_Text nameText;
     [SerializeField]
-    private TMP_Text descriptionText;
+    protected TMP_Text descriptionText;
     [SerializeField]
-    private Image image;
+    protected Image image;
     [SerializeField]
-    private TMP_Text purchasedQuantityText;
+    protected TMP_Text purchasedQuantityText;
     [SerializeField]
-    private TMP_Text priceText;
-
-    private bool isInit;
-
-    public void Init()
-    {
-        if (isInit) return;
-
-        if (button != null)
-        {
-            button.onClick.AddListener(OnClicked);
-        }
-
-        isInit = true;
-    }
-
-    public void Dispose()
-    {
-        if (!isInit) return;
-
-        if (button != null)
-        {
-            button.onClick.RemoveListener(OnClicked);
-        }
-
-        isInit = false;
-    }
+    protected TMP_Text priceText;
 
     public void SetName(string productName)
     {
@@ -101,10 +69,5 @@ public class ProductView : MonoBehaviour
 
         if (image != null)
             image.sprite = null;
-    }
-
-    private void OnClicked()
-    {
-        OnClick.Invoke(this);
     }
 }

@@ -1,5 +1,5 @@
 public interface IShowablePanel
 {
-    void Show(bool isImmediately);
-    void Hide(bool isImmediately);
+    void Show(bool isImmediately = false);
+    void Hide(bool isImmediately = false);
 }

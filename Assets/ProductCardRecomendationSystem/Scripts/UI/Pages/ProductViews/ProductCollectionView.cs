@@ -9,11 +9,11 @@ public class ProductCollectionView : MonoBehaviour
 
     [Header("View")]
     [SerializeField]
-    private ProductView productViewPrefab;
+    private ProductCardView productViewPrefab;
     [SerializeField]
     private Transform container;
 
-    private Dictionary<ProductView, IProductData> viewsToProductData;
+    private Dictionary<ProductCardView, IProductData> viewsToProductData;
 
     private bool isInit;
 
@@ -40,7 +40,7 @@ public class ProductCollectionView : MonoBehaviour
 
     private void CreateViews(IReadOnlyList<IProductData> products)
     {
-        viewsToProductData = new Dictionary<ProductView, IProductData>();
+        viewsToProductData = new Dictionary<ProductCardView, IProductData>();
 
         foreach (IProductData product in products)
         {
@@ -50,17 +50,17 @@ public class ProductCollectionView : MonoBehaviour
 
     private void CreateView(IProductData product)
     {
-        ProductView productView = Instantiate(productViewPrefab, container);
-        productView.Init();
-        SetupView(productView, product);
-        productView.OnClick += OnClickByProductView;
+        ProductCardView view = Instantiate(productViewPrefab, container);
+        view.Init();
+        SetupProductView(view, product);
+        view.OnClick += OnClickByProductView;
 
-        viewsToProductData.Add(productView, product);
+        viewsToProductData.Add(view, product);
     }
 
     private void DestroyViews()
     {
-        foreach (ProductView view in viewsToProductData.Keys)
+        foreach (ProductCardView view in viewsToProductData.Keys)
         {
             view.Dispose();
             view.OnClick -= OnClickByProductView;
@@ -72,7 +72,7 @@ public class ProductCollectionView : MonoBehaviour
         viewsToProductData = null;
     }
 
-    private void SetupView(ProductView view, IProductData product)
+    private void SetupProductView(BaseProductInfoView view, IProductData product)
     {
         view.SetName(product.GetName());
         view.SetDescription(product.GetDescription());
@@ -84,14 +84,14 @@ public class ProductCollectionView : MonoBehaviour
 
     private float ConvertPopularityToRating(int popularity)
     {
-        float scaled = popularity / 20.0f;
+        float rating = 1f + 4f * (popularity / 100f);
 
-        return Mathf.Round(scaled * 10f) / 10f;
+        return Mathf.Round(rating * 10f) / 10f;
     }
 
-    private void OnClickByProductView(ProductView view)
+    private void OnClickByProductView(ProductCardView view)
     {
-        if (viewsToProductData.TryGetValue(view, out var product))
+        if (viewsToProductData.TryGetValue(view, out IProductData product))
         {
             OnProductSelected?.Invoke(product);
         }
