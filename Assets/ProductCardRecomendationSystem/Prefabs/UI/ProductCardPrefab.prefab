@@ -511,7 +511,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
+  m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 5473538959748885076}
   - component: {fileID: 6050828764399329754}
   - component: {fileID: 4501568486091444321}
-  - component: {fileID: 882046079891196473}
+  - component: {fileID: 5259290327797259690}
   - component: {fileID: 2186696601228760072}
   m_Layer: 5
   m_Name: ProductCardPrefab
@@ -630,7 +630,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 390}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5473538959748885076
 CanvasRenderer:
@@ -714,7 +714,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &882046079891196473
+--- !u!114 &5259290327797259690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -723,16 +723,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8019559439985805477}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 671bd7f02fb281e4aa4c3b406ce08b31, type: 3}
+  m_Script: {fileID: 11500000, guid: 12678d12a23e0f247ab8c8985fe27a12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 4501568486091444321}
   ratingText: {fileID: 6948867160685799646}
   nameText: {fileID: 5134950104658390211}
   descriptionText: {fileID: 0}
-  image: {fileID: 0}
-  brandText: {fileID: 0}
+  image: {fileID: 4994962589386059054}
+  purchasedQuantityText: {fileID: 0}
   priceText: {fileID: 5247479260396902925}
+  button: {fileID: 4501568486091444321}
 --- !u!114 &2186696601228760072
 MonoBehaviour:
   m_ObjectHideFlags: 0
