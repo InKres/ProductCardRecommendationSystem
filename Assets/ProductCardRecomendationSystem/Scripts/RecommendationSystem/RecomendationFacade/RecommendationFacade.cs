@@ -6,70 +6,29 @@ namespace RecomendationSystem.Recommendation
     public class RecommendationFacade : IRecommendationFacade
     {
         private readonly IProductRepository productRepository;
-        private readonly SimilarItemsEngine similarItemsEngine;
-        private readonly RankingEngine rankingEngine;
 
-        public RecommendationFacade(IProductRepository productRepository, SimilarItemsEngine similarItemsEngine, RankingEngine rankingEngine)
+        private readonly SimilarItemsEngine similarItemsEngine;
+        private readonly PopularItemsEngine popularItemsEngine;
+
+        public RecommendationFacade(IProductRepository productRepository, SimilarItemsEngine similarItemsEngine, PopularItemsEngine popularItemsEngine)
         {
             this.productRepository = productRepository;
             this.similarItemsEngine = similarItemsEngine;
-            this.rankingEngine = rankingEngine;
+            this.popularItemsEngine = popularItemsEngine;
         }
 
         public IReadOnlyList<IProductData> GetPopularProducts(int count)
         {
             IReadOnlyList<IProductData> products = productRepository.GetAllProducts();
 
-            return rankingEngine.GetPopularProducts(products, count);
+            return popularItemsEngine.GetPopular(products, count);
         }
 
         public IReadOnlyList<IProductData> GetPopularProducts(string categoryId, int count)
         {
             IReadOnlyList<IProductData> products = productRepository.GetProductsByCategory(categoryId);
 
-            return rankingEngine.GetPopularProducts(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetProductsSortedByAscendingPrice(int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetAllProducts();
-
-            return rankingEngine.GetProductsSortedByAscendingPrice(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetProductsSortedByAscendingPrice(string categoryId, int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetProductsByCategory(categoryId);
-
-            return rankingEngine.GetProductsSortedByAscendingPrice(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetProductsSortedByDescendingPrice(int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetAllProducts();
-
-            return rankingEngine.GetProductsSortedByDescendingPrice(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetProductsSortedByDescendingPrice(string categoryId, int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetProductsByCategory(categoryId);
-
-            return rankingEngine.GetProductsSortedByDescendingPrice(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetMostPurchasedProducts(int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetAllProducts();
-
-            return rankingEngine.GetMostPurchasedProducts(products, count);
-        }
-
-        public IReadOnlyList<IProductData> GetMostPurchasedProducts(string categoryId, int count)
-        {
-            IReadOnlyList<IProductData> products = productRepository.GetProductsByCategory(categoryId);
-
-            return rankingEngine.GetMostPurchasedProducts(products, count);
+            return popularItemsEngine.GetPopular(products, count);
         }
 
         public IReadOnlyList<IProductData> GetSimilarProducts(IProductData product, int count)
@@ -88,12 +47,12 @@ namespace RecomendationSystem.Recommendation
 
         public IReadOnlyList<IProductData> GetPopularSimilarProducts(IProductData product, int count)
         {
-            return rankingEngine.GetPopularProducts(GetSimilarProducts(product, count * 5), count);
+            return popularItemsEngine.GetPopular(GetSimilarProducts(product, count * 5), count);
         }
 
         public IReadOnlyList<IProductData> GetPopularSimilarProducts(IProductData product, string categoryId, int count)
         {
-            return rankingEngine.GetPopularProducts(GetSimilarProducts(product, categoryId, count * 5), count);
+            return popularItemsEngine.GetPopular(GetSimilarProducts(product, categoryId, count * 5), count);
         }
     }
 }

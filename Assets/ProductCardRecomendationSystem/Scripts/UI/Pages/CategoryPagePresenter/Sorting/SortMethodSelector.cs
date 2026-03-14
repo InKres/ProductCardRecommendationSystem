@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class SortMethodSelector : MonoBehaviour
 {
+    [Serializable]
     public class SortMethodSettings
     {
         [SerializeField]
@@ -24,7 +25,8 @@ public class SortMethodSelector : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField]
-    private List<SortMethodSettings> sortMethods = new List<SortMethodSettings>();
+    private List<SortMethodSettings> m_SortMethods = new List<SortMethodSettings>();
+    public IReadOnlyList<SortMethodSettings> SortMethods => m_SortMethods;
 
     private bool isInit;
 
@@ -52,6 +54,11 @@ public class SortMethodSelector : MonoBehaviour
     {
         if (isInit)
         {
+            if (dropdown.value == 0)
+            {
+                OnDropdownValueChanged(0);
+            }
+
             dropdown.value = 0;
         }
     }
@@ -60,17 +67,18 @@ public class SortMethodSelector : MonoBehaviour
     {
         List<string> options = new List<string>();
 
-        foreach (SortMethodSettings sortMethod in sortMethods)
+        foreach (SortMethodSettings sortMethod in m_SortMethods)
         {
             options.Add(sortMethod.SortMethodName);
         }
 
+        dropdown.ClearOptions();
         dropdown.AddOptions(options);
         dropdown.value = 0;
     }
 
     private void OnDropdownValueChanged(int value)
     {
-        OnSortMethodSelected?.Invoke(sortMethods[value].SortMethod);
+        OnSortMethodSelected?.Invoke(m_SortMethods[value].SortMethod);
     }
 }

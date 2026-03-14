@@ -1,6 +1,5 @@
 using RecomendationSystem.Data;
 using RecomendationSystem.Encoding;
-using RecomendationSystem.Recommendation;
 using System.Collections.Generic;
 using System.Linq;
 
