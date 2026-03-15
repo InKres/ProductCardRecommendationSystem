@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Presets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +40,8 @@ public class SortMethodSelector : MonoBehaviour
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
 
         isInit = true;
+
+        OnDropdownValueChanged(0);
     }
 
     public void Dispose()

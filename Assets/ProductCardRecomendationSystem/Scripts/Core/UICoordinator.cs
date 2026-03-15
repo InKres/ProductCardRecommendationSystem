@@ -12,7 +12,7 @@ public class UICoordinator : MonoBehaviour
 
     [Header("Presenters")]
     [SerializeField]
-    private HomePagePresenter homePage;
+    private BaseProductPagePresenter homePage;
     [SerializeField]
     private CategoryPagePresenter categoryPage;
     [SerializeField]
@@ -151,6 +151,8 @@ public class UICoordinator : MonoBehaviour
 
     private void OnShowCategoryPage()
     {
+        homePage.ResetSorting();
+
         productPage.RemoveProduct();
 
         homeButton.gameObject.SetActive(true);
