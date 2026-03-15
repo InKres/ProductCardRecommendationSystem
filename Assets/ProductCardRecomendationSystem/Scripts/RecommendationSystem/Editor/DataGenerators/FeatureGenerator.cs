@@ -1,4 +1,5 @@
 using RecomendationSystem.Data;
+using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
@@ -7,80 +8,43 @@ namespace RecomendationSystem.DataGeneration
     public static class FeatureGenerator
     {
         private static readonly string[] colors =
-        {
-        "красный",
-        "синий",
-        "черный",
-        "белый",
-        "зеленый",
-        "желтый",
-        "серый"
-    };
+        { "Красный","Синий","Черный","Белый","Зеленый","Желтый","Серый" };
 
         private static readonly string[] materials =
-        {
-        "хлопок",
-        "шерсть",
-        "полиэстер",
-        "кожа",
-        "синтетика"
-    };
+        { "Хлопок","Шерсть","Полиэстер","Кожа","Синтетика" };
 
-        private static readonly string[] brands =
-        {
-        "Nike",
-        "Adidas",
-        "Logitech",
-        "ASUS",
-        "Sony",
-        "Microsoft"
-    };
+        // Бренды по категориям
+
+        private static readonly string[] clothesBrands =
+        { "Nike","Adidas","Puma","Reebok","Under Armour" };
+
+        private static readonly string[] pcBrands =
+        { "ASUS","MSI","Gigabyte","Intel","AMD","Corsair" };
+
+        private static readonly string[] peripheralBrands =
+        { "Logitech","Razer","SteelSeries","HyperX","Corsair" };
+
+        private static readonly string[] gameBrands =
+        { "Sony","Microsoft","Nintendo","Ubisoft","Electronic Arts","Valve" };
+
+        private static readonly string[] bookBrands =
+        { "Эксмо","АСТ","Питер","Манн, Иванов и Фербер","Бомбора" };
 
         private static readonly string[] gameGenres =
-        {
-        "экшен",
-        "стратегия",
-        "рпг",
-        "симулятор",
-        "приключение"
-    };
+        { "Экшен","Стратегия","РПГ","Симулятор","Приключение" };
 
         private static readonly string[] bookGenres =
-        {
-        "фантастика",
-        "детектив",
-        "роман",
-        "научная литература",
-        "фэнтези"
-    };
+        { "Фантастика","Детектив","Роман","Научная литература","Фэнтези" };
 
         public static List<FeatureData> GenerateFeatures(CategoryData category)
         {
-            string categoryName = category.GetName();
-
-            if (categoryName == "Одежда")
+            switch (category.GetName())
             {
-                return GenerateClothesFeatures();
-            }
-
-            if (categoryName == "Компьютерная периферия")
-            {
-                return GeneratePeripheralFeatures();
-            }
-
-            if (categoryName == "Комплектующие ПК")
-            {
-                return GeneratePcComponentFeatures();
-            }
-
-            if (categoryName == "Видеоигры")
-            {
-                return GenerateGameFeatures();
-            }
-
-            if (categoryName == "Книги")
-            {
-                return GenerateBookFeatures();
+                case "Одежда": return GenerateClothesFeatures();
+                case "Компьютерная периферия": return GeneratePeripheralFeatures();
+                case "Комплектующие ПК": return GeneratePcComponentFeatures();
+                case "Видеоигры": return GenerateGameFeatures();
+                case "Книги": return GenerateBookFeatures();
             }
 
             return new List<FeatureData>();
@@ -90,27 +54,29 @@ namespace RecomendationSystem.DataGeneration
 
         private static List<FeatureData> GenerateClothesFeatures()
         {
-            List<FeatureData> features = new List<FeatureData>();
-
-            features.Add(new FeatureData("цвет", RandomFrom(colors)));
-            features.Add(new FeatureData("материал", RandomFrom(materials)));
-            features.Add(new FeatureData("бренд", RandomFrom(brands)));
-            features.Add(new FeatureData("размер", Random.Range(42f, 56f)));
-            features.Add(new FeatureData("утепленный", RandomBool()));
-
-            return features;
+            return new List<FeatureData>
+            {
+                new FeatureData("Цвет", RandomFrom(colors)),
+                new FeatureData("Материал", RandomFrom(materials)),
+                new FeatureData("Бренд", RandomFrom(clothesBrands)),
+                new FeatureData("Размер", Random.Range(42,56)),
+                new FeatureData("Утепленный", RandomBool())
+            };
         }
 
         // ===================== ПЕРИФЕРИЯ =====================
 
         private static List<FeatureData> GeneratePeripheralFeatures()
         {
-            List<FeatureData> features = new List<FeatureData>();
+            List<FeatureData> features = new List<FeatureData>
+            {
+                new FeatureData("Бренд", RandomFrom(peripheralBrands)),
+                new FeatureData("Беспроводной", RandomBool()),
+                new FeatureData("Вес", Round1(Random.Range(50f,1200f))),
+                new FeatureData("Подсветка", RandomBool())
+            };
 
-            features.Add(new FeatureData("бренд", RandomFrom(brands)));
-            features.Add(new FeatureData("беспроводной", RandomBool()));
-            features.Add(new FeatureData("вес", Random.Range(50f, 1200f)));
-            features.Add(new FeatureData("подсветка", RandomBool()));
+            features.AddRange(CreateSizeFeatures());
 
             return features;
         }
@@ -119,12 +85,15 @@ namespace RecomendationSystem.DataGeneration
 
         private static List<FeatureData> GeneratePcComponentFeatures()
         {
-            List<FeatureData> features = new List<FeatureData>();
+            List<FeatureData> features = new List<FeatureData>
+            {
+                new FeatureData("Бренд", RandomFrom(pcBrands)),
+                new FeatureData("Энергопотребление", Round1(Random.Range(35f,350f))),
+                new FeatureData("Частота", Round1(Random.Range(2.0f,5.5f))),
+                new FeatureData("Охлаждение", RandomBool())
+            };
 
-            features.Add(new FeatureData("бренд", RandomFrom(brands)));
-            features.Add(new FeatureData("энергопотребление", Random.Range(35f, 350f)));
-            features.Add(new FeatureData("частота", Random.Range(2.0f, 5.5f)));
-            features.Add(new FeatureData("охлаждение", RandomBool()));
+            features.AddRange(CreateSizeFeatures());
 
             return features;
         }
@@ -133,41 +102,55 @@ namespace RecomendationSystem.DataGeneration
 
         private static List<FeatureData> GenerateGameFeatures()
         {
-            List<FeatureData> features = new List<FeatureData>();
-
-            features.Add(new FeatureData("жанр", RandomFrom(gameGenres)));
-            features.Add(new FeatureData("мультиплеер", RandomBool()));
-            features.Add(new FeatureData("возрастной рейтинг", Random.Range(6f, 18f)));
-            features.Add(new FeatureData("бренд", RandomFrom(brands)));
-
-            return features;
+            return new List<FeatureData>
+            {
+                new FeatureData("Жанр", RandomFrom(gameGenres)),
+                new FeatureData("Мультиплеер", RandomBool()),
+                new FeatureData("Возрастной рейтинг", Random.Range(6,18)),
+                new FeatureData("Бренд", RandomFrom(gameBrands))
+            };
         }
 
         // ===================== КНИГИ =====================
 
         private static List<FeatureData> GenerateBookFeatures()
         {
-            List<FeatureData> features = new List<FeatureData>();
+            return new List<FeatureData>
+            {
+                new FeatureData("Жанр", RandomFrom(bookGenres)),
+                new FeatureData("Твердая обложка", RandomBool()),
+                new FeatureData("Количество страниц", Random.Range(120,900)),
+                new FeatureData("Бренд", RandomFrom(bookBrands))
+            };
+        }
 
-            features.Add(new FeatureData("жанр", RandomFrom(bookGenres)));
-            features.Add(new FeatureData("твердая обложка", RandomBool()));
-            features.Add(new FeatureData("количество страниц", Random.Range(120f, 900f)));
-            features.Add(new FeatureData("бренд", RandomFrom(brands)));
+        // ===================== SIZE =====================
 
-            return features;
+        private static List<FeatureData> CreateSizeFeatures()
+        {
+            return new List<FeatureData>
+            {
+                new FeatureData("Размер (Ширина)", Round1(Random.Range(5f,60f))),
+                new FeatureData("Размер (Высота)", Round1(Random.Range(5f,60f))),
+                new FeatureData("Размер (Длина)", Round1(Random.Range(5f,60f)))
+            };
         }
 
         // ===================== HELPERS =====================
 
         private static string RandomFrom(string[] array)
         {
-            int index = Random.Range(0, array.Length);
-            return array[index];
+            return array[Random.Range(0, array.Length)];
         }
 
         private static bool RandomBool()
         {
             return Random.Range(0, 2) == 0;
+        }
+
+        private static float Round1(float value)
+        {
+            return (float)Math.Round(value, 1);
         }
     }
 }

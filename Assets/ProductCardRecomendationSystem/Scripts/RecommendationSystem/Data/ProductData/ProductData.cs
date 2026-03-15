@@ -39,6 +39,8 @@ namespace RecomendationSystem.Data
         public ProductData(
             string id,
             string name,
+            string description,
+            Sprite image,
             float price,
             string categoryID,
             int popularity,
@@ -47,6 +49,8 @@ namespace RecomendationSystem.Data
         {
             this.id = id;
             this.name = name;
+            this.description = description;
+            this.image = image;
             this.price = price;
             this.categoryID = categoryID;
             this.popularity = popularity;
