@@ -732,6 +732,7 @@ MonoBehaviour:
   image: {fileID: 4994962589386059054}
   purchasedQuantityText: {fileID: 0}
   priceText: {fileID: 5247479260396902925}
+  defaultProductImage: {fileID: 21300000, guid: 23355d4ce5b2f254192b9666f02d8463, type: 3}
   button: {fileID: 4501568486091444321}
 --- !u!114 &2186696601228760072
 MonoBehaviour:

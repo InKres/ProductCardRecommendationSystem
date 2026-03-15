@@ -18,6 +18,10 @@ public class BaseProductInfoView : MonoBehaviour
     [SerializeField]
     protected TMP_Text priceText;
 
+    [Header("Settings")]
+    [SerializeField]
+    private Sprite defaultProductImage;
+
     public void SetName(string productName)
     {
         if (nameText != null)
@@ -37,6 +41,10 @@ public class BaseProductInfoView : MonoBehaviour
             if (productImage != null)
             {
                 image.sprite = productImage;
+            }
+            else
+            {
+                image.sprite = defaultProductImage;
             }
         }
     }
@@ -68,6 +76,6 @@ public class BaseProductInfoView : MonoBehaviour
         SetPurchasedQuantity(0);
 
         if (image != null)
-            image.sprite = null;
+            image.sprite = defaultProductImage;
     }
 }

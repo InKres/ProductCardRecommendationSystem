@@ -8215,6 +8215,7 @@ MonoBehaviour:
   image: {fileID: 1753103746}
   purchasedQuantityText: {fileID: 1235971937}
   priceText: {fileID: 48470219}
+  defaultProductImage: {fileID: 21300000, guid: 23355d4ce5b2f254192b9666f02d8463, type: 3}
 --- !u!1 &1845605500
 GameObject:
   m_ObjectHideFlags: 0

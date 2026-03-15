@@ -38,6 +38,8 @@ public class Bootstrap : MonoBehaviour
     {
         repository = new ProductRepository(productDatabase);
         repository.Init();
+        
+        categoryDatabase.Init();
 
         IReadOnlyList<IProductData> products = repository.GetAllProducts();
 
@@ -62,6 +64,8 @@ public class Bootstrap : MonoBehaviour
         vectorCache = null;
         encoder = null;
         repository = null;
+
+        categoryDatabase.Dispose();
     }
 
     private FeatureEncoder CreateAndFitEncoder(IReadOnlyList<IProductData> products)

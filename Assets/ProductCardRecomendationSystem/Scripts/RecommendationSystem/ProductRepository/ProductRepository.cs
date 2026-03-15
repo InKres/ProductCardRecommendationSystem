@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using RecomendationSystem.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RecomendationSystem.Recommendation
 {
@@ -35,7 +36,7 @@ namespace RecomendationSystem.Recommendation
 
         public IReadOnlyList<IProductData> GetAllProducts()
         {
-            return new List<IProductData>(productIDToProduct.Values);
+            return productIDToProduct.Values.ToList();
         }
 
         public IReadOnlyList<IProductData> GetProductsByCategory(string categoryID)
