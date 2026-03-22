@@ -12,7 +12,7 @@ public class UICoordinator : MonoBehaviour
 
     [Header("Presenters")]
     [SerializeField]
-    private BaseProductPagePresenter homePage;
+    private BaseProductsPagePresenter homePage;
     [SerializeField]
     private CategoryPagePresenter categoryPage;
     [SerializeField]

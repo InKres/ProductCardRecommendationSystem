@@ -18,6 +18,40 @@ namespace RecomendationSystem.Encoding
             InitializeHandlers();
         }
 
+        public void Fit(IReadOnlyList<IProductData> products)
+        {
+            featureKeyToIndex.Clear();
+            featureKeyToFloatStats.Clear();
+
+            int index = 0;
+
+            foreach (IProductData product in products)
+            {
+                index = ProcessProduct(product, index);
+            }
+
+            vectorSize = index;
+        }
+
+        public float[] Encode(IProductData product)
+        {
+            float[] vector = new float[vectorSize];
+
+            IReadOnlyList<IFeatureData> features = product.GetFeatures();
+
+            foreach (IFeatureData feature in features)
+            {
+                EncodeFeature(feature, vector);
+            }
+
+            return vector;
+        }
+
+        public int GetVectorSize()
+        {
+            return vectorSize;
+        }
+
         private void InitializeHandlers()
         {
             featureTypeToHandler = new Dictionary<FeatureValueType, IFeatureHandler>();
@@ -36,21 +70,6 @@ namespace RecomendationSystem.Encoding
                 FeatureValueType.String,
                 new StringFeatureHandler()
             );
-        }
-
-        public void Fit(IReadOnlyList<IProductData> products)
-        {
-            featureKeyToIndex.Clear();
-            featureKeyToFloatStats.Clear();
-
-            int index = 0;
-
-            foreach (IProductData product in products)
-            {
-                index = ProcessProduct(product, index);
-            }
-
-            vectorSize = index;
         }
 
         private int ProcessProduct(IProductData product, int currentIndex)
@@ -73,20 +92,6 @@ namespace RecomendationSystem.Encoding
             }
 
             return currentIndex;
-        }
-
-        public float[] Encode(IProductData product)
-        {
-            float[] vector = new float[vectorSize];
-
-            IReadOnlyList<IFeatureData> features = product.GetFeatures();
-
-            foreach (IFeatureData feature in features)
-            {
-                EncodeFeature(feature, vector);
-            }
-
-            return vector;
         }
 
         private void EncodeFeature(IFeatureData feature, float[] vector)
@@ -119,11 +124,6 @@ namespace RecomendationSystem.Encoding
             }
 
             return handler;
-        }
-
-        public int GetVectorSize()
-        {
-            return vectorSize;
         }
     }
 }

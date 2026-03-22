@@ -12,13 +12,11 @@ namespace RecomendationSystem.Data
         [SerializeField]
         private string name;
 
-        //TODO: Это "Reference by ID" паттерн. Нужно вставить в курсовую
         [SerializeField]
         private string parentID;
 
         [SerializeField]
         private List<string> childrenID = new List<string>();
-        //=============================================================
 
         public CategoryData(string id, string name, string parentID)
         {

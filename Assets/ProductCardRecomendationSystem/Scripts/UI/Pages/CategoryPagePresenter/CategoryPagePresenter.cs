@@ -1,7 +1,7 @@
 using RecomendationSystem.Data;
 using System.Collections.Generic;
 
-public class CategoryPagePresenter : BaseProductPagePresenter
+public class CategoryPagePresenter : BaseProductsPagePresenter
 {
     private string categoryUID;
     public bool IsHasCategory => !string.IsNullOrEmpty(categoryUID);

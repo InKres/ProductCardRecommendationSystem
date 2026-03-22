@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseProductPagePresenter : PresenterBehaviour<IRecommendationFacade>, IShowablePanel
+public class BaseProductsPagePresenter : PresenterBehaviour<IRecommendationFacade>, IShowablePanel
 {
     public event Action<IProductData> OnProductSelected;
 
